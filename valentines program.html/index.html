@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Will you be my Valentine?</title>
+
+<style>
+:root{
+  --bg-dark:#2b0006;
+  --bg-red:#0e0003;
+  --black:#000;
+  --red:#7a0f1a;
+  --red2:#3f0208;
+  --redGlow:#b11226;
+  --text:#f1f1f1;
+  --muted:#999;
+}
+
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  height:100vh;
+  display:grid;
+  place-items:center;
+  background:
+    radial-gradient(circle at top, #3a0009, #120003 60%),
+    linear-gradient(180deg, var(--bg-dark), var(--bg-red));
+  font-family: "Georgia", serif;
+  color:var(--text);
+  overflow:hidden;
+}
+
+.card{
+  width:min(760px,92vw);
+  height:min(420px,70vh);
+  background:#000;
+  border-radius:16px;
+  box-shadow:
+    0 0 60px rgba(177,18,38,.45),
+    0 30px 80px rgba(0,0,0,1);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.view{
+  width:100%;
+  text-align:center;
+}
+
+h1{
+  font-size:clamp(30px,4.6vw,46px);
+  font-weight:900;
+  letter-spacing:1.2px;
+  margin-bottom:28px;
+}
+
+.buttons{
+  position:relative;
+  height:140px;
+  width:min(580px,92vw);
+  margin:0 auto;
+}
+
+/* YES button */
+#yes{
+  position:absolute;
+  left:0;
+  top:42px;
+  padding:18px 44px;
+  border-radius:999px;
+  border:none;
+  background:linear-gradient(180deg,#8e0f1e,#3f0208);
+  color:#fff;
+  font-size:18px;
+  font-weight:900;
+  cursor:pointer;
+  box-shadow:
+    0 0 30px rgba(177,18,38,1),
+    0 20px 60px rgba(0,0,0,1);
+  transition:transform .15s ease, box-shadow .15s ease;
+}
+
+#yes:hover{
+  transform:scale(1.05);
+  box-shadow:
+    0 0 40px rgba(177,18,38,1),
+    0 26px 70px rgba(0,0,0,1);
+}
+
+/* NO button */
+#no{
+  position:absolute;
+  right:0;
+  top:58px;
+  padding:6px 14px;
+  font-size:13px;
+  border-radius:999px;
+  border:none;
+  background:linear-gradient(180deg,#7a0f1a,#2a0005);
+  color:#eee;
+  font-weight:700;
+  cursor:pointer;
+  user-select:none;
+}
+
+.shy{
+  margin-top:14px;
+  font-size:15px;
+  color:var(--muted);
+}
+
+/* SUCCESS VIEW */
+.success{
+  display:none;
+}
+
+.success h2{
+  font-size:clamp(28px,4.2vw,40px);
+  margin-bottom:18px;
+  animation:fadeIn 1.2s ease forwards;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(10px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+.gif{
+  width:270px;
+  height:270px;
+  margin:0 auto;
+  border-radius:14px;
+  overflow:hidden;
+  box-shadow:
+    0 0 40px rgba(177,18,38,.8),
+    0 25px 70px rgba(0,0,0,1);
+}
+
+.gif img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <!-- ASK VIEW -->
+  <div class="view" id="ask">
+    <h1>Kay Kay… will you be my Valentine?</h1>
+
+    <div class="buttons" id="arena">
+      <button id="yes">Yes 🖤</button>
+      <button id="no">No</button>
+    </div>
+
+    <div class="shy">Careful… the ‘no’ button bites. 🧛‍♂️</div>
+  </div>
+
+  <!-- SUCCESS VIEW -->
+  <div class="view success" id="success">
+    <h2>I love you so much baby!! 🖤🖤🖤</h2>
+
+    <div class="gif">
+      <img src="mimikyu.gif" alt="Mimikyu love gif">
+    </div>
+  </div>
+</div>
+
+<script>
+const no = document.getElementById("no");
+const arena = document.getElementById("arena");
+const yes = document.getElementById("yes");
+const ask = document.getElementById("ask");
+const success = document.getElementById("success");
+
+// VERY close before NO moves
+const DODGE_DISTANCE = 38;
+
+function moveNo(){
+  const a = arena.getBoundingClientRect();
+  const b = no.getBoundingClientRect();
+
+  const minX = a.width * 0.55;
+  const maxX = a.width - b.width - 8;
+  const minY = 24;
+  const maxY = a.height - b.height - 24;
+
+  const x = minX + Math.random() * (maxX - minX);
+  const y = minY + Math.random() * (maxY - minY);
+
+  no.style.left = x + "px";
+  no.style.top = y + "px";
+  no.style.right = "auto";
+}
+
+arena.addEventListener("mousemove", e => {
+  const b = no.getBoundingClientRect();
+  const d = Math.hypot(
+    e.clientX - (b.left + b.width/2),
+    e.clientY - (b.top + b.height/2)
+  );
+  if(d < DODGE_DISTANCE) moveNo();
+});
+
+no.addEventListener("mouseenter", moveNo);
+no.addEventListener("mousedown", e => { e.preventDefault(); moveNo(); });
+no.addEventListener("touchstart", e => { e.preventDefault(); moveNo(); }, {passive:false});
+
+yes.onclick = () => {
+  ask.style.display = "none";
+  success.style.display = "block";
+};
+</script>
+
+</body>
+</html>
